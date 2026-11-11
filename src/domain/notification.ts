@@ -1,0 +1,4 @@
+import { z } from 'zod';
+export const eventSchema=z.object({eventId:z.string().uuid(),version:z.literal(1),type:z.enum(['ReservaCriada','ReservaCancelada','PagamentoConfirmado']),userId:z.string().uuid(),reservationId:z.string().uuid(),occurredAt:z.string().datetime(),correlationId:z.string().min(1).max(80)}).strict();
+export type Notification={id:string;userId:string;reservationId:string;message:string;createdAt:string;type:string};
+export function notification(input:unknown):Notification{const event=eventSchema.parse(input);return {id:event.eventId,userId:event.userId,reservationId:event.reservationId,type:event.type,createdAt:event.occurredAt,message:{ReservaCriada:'Sua reserva foi criada.',ReservaCancelada:'Sua reserva foi cancelada.',PagamentoConfirmado:'Pagamento simulado aprovado.'}[event.type]};}
